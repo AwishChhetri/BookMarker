@@ -1,26 +1,26 @@
 # Smart Bookmark App
 
-A simple bookmark manager built with Next.js, Supabase, and Tailwind CSS. Features Google OAuth authentication and real-time bookmark management.
+A modern bookmark manager built with Next.js 14, Supabase, and Tailwind CSS. Features Google OAuth authentication, real-time updates, and a responsive mobile-first design.
 
 ## Features
 
-- Google OAuth authentication
-- Add bookmarks with title and URL
-- View bookmarks in real-time
-- Private bookmarks (each user sees only their own)
-- Delete bookmarks
-- Responsive design
-- Favorites support
-- Recent bookmarks view
-- Category filtering
-- Mobile-friendly interface
+- 🔐 **Google OAuth Authentication** - Secure login with Google
+- 📱 **Responsive Design** - Works on desktop and mobile
+- ⭐ **Favorites** - Mark bookmarks as favorites
+- 🕐 **Recent** - View recently added bookmarks
+- 🏷️ **Categories** - Organize bookmarks by category
+- 🔍 **Search** - Search bookmarks by title, URL, tags, or category
+- 🔄 **Real-time Updates** - Changes sync instantly across devices
+- 🎨 **Dark Theme** - Modern dark UI with Tailwind CSS
 
 ## Tech Stack
 
-- **Frontend**: Next.js 14 with TypeScript
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript
 - **Styling**: Tailwind CSS
-- **Backend**: Supabase (Authentication + Database)
+- **Backend**: Supabase (Auth + Database + Realtime)
 - **Icons**: Lucide React
+- **Notifications**: React Hot Toast + SweetAlert2
 
 ## Setup Instructions
 
@@ -57,27 +57,20 @@ CREATE TABLE bookmarks (
 -- Enable Row Level Security
 ALTER TABLE bookmarks ENABLE ROW LEVEL SECURITY;
 
--- Create policy to allow users to see only their own bookmarks
+-- Create policies
 CREATE POLICY "Users can view their own bookmarks"
-  ON bookmarks FOR SELECT
-  USING (auth.uid() = user_id);
+  ON bookmarks FOR SELECT USING (auth.uid() = user_id);
 
--- Create policy to allow users to insert their own bookmarks
 CREATE POLICY "Users can insert their own bookmarks"
-  ON bookmarks FOR INSERT
-  WITH CHECK (auth.uid() = user_id);
+  ON bookmarks FOR INSERT WITH CHECK (auth.uid() = user_id);
 
--- Create policy to allow users to update their own bookmarks
 CREATE POLICY "Users can update their own bookmarks"
-  ON bookmarks FOR UPDATE
-  USING (auth.uid() = user_id);
+  ON bookmarks FOR UPDATE USING (auth.uid() = user_id);
 
--- Create policy to allow users to delete their own bookmarks
 CREATE POLICY "Users can delete their own bookmarks"
-  ON bookmarks FOR DELETE
-  USING (auth.uid() = user_id);
+  ON bookmarks FOR DELETE USING (auth.uid() = user_id);
 
--- Enable real-time for bookmarks table
+-- Enable real-time
 ALTER PUBLICATION supabase_realtime ADD TABLE bookmarks;
 ```
 
@@ -94,7 +87,7 @@ ALTER PUBLICATION supabase_realtime ADD TABLE bookmarks;
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
    ```
 
-### 5. Install Dependencies and Run
+### 5. Install and Run
 
 ```bash
 npm install
@@ -105,37 +98,39 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Deployment to Vercel
 
-1. Push your code to a GitHub repository
+1. Push your code to GitHub
 2. Import the project in Vercel
-3. Add the environment variables in Vercel's project settings
-4. Update the Google OAuth redirect URL to include your Vercel domain
+3. Add environment variables:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+4. Update Google OAuth redirect URLs to include your Vercel domain
 
 ## Project Structure
 
 ```
 src/
 ├── app/
-│   ├── auth/
-│   │   └── callback/
-│   │       └── route.ts    # OAuth callback handler
-│   ├── globals.css         # Global styles
-│   ├── layout.tsx          # Root layout
-│   └── page.tsx            # Main page
+│   ├── auth/callback/route.ts  # OAuth callback handler
+│   ├── globals.css              # Global styles + Tailwind
+│   ├── layout.tsx               # Root layout
+│   └── page.tsx                 # Main page (Auth or Dashboard)
 ├── components/
-│   ├── Auth.tsx            # Login component
-│   ├── AddBookmarkSidebar.tsx # Add/Edit bookmark sidebar
-│   ├── BookmarkCard.tsx    # Bookmark card with favorite support
-│   ├── BookmarkList.tsx    # Bookmark list with real-time
-│   ├── Dashboard.tsx       # Main dashboard
-│   ├── MobileMenu.tsx      # Mobile navigation menu
-│   └── ProfileMenu.tsx     # User profile menu
+│   ├── Auth.tsx                 # Google OAuth login
+│   ├── AddBookmarkSidebar.tsx   # Add/Edit bookmark panel
+│   ├── BookmarkCard.tsx         # Bookmark card with actions
+│   ├── Dashboard.tsx            # Main app dashboard
+│   ├── MobileMenu.tsx           # Mobile navigation
+│   └── ProfileMenu.tsx          # User profile dropdown
 ├── lib/
-│   ├── supabase-client.ts  # Supabase client (browser)
-│   └── supabase-server.ts  # Supabase client (server)
+│   ├── supabase-client.ts       # Browser client
+│   └── supabase-server.ts       # Server client
 └── types/
-    └── index.ts            # Shared types
+    └── index.ts                 # TypeScript types
 ```
 
-## License
+## Categories
 
-MIT
+The app supports these bookmark categories:
+- Development, Design, Reference, Work
+- Education, Shopping, News, Social
+- Entertainment, Other
